@@ -1,0 +1,6 @@
+.messages-form {
+    height: 80vh;
+    border: 1px solid lightgray;
+    overflow-y: scroll;
+    margin-bottom: 15px;
+}
