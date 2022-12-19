@@ -2,11 +2,19 @@ import React from 'react'
 import {Navbar, Container, Button, Stack} from 'react-bootstrap'
 import { useSelector } from 'react-redux';
 import { LinkContainer } from "react-router-bootstrap";
+import { useLogoutUserMutation } from '../services/appApi'
 
 function Navigation() {
 
   const user = useSelector(state => state.user);
-  console.log(user);
+  const [logoutUser] = useLogoutUserMutation();
+  
+  async function handleLogout(e) {
+      e.preventDefault();
+      await logoutUser(user);
+      
+      window.location.replace('/login')
+  }
 
   return (
     <Navbar bg='dark'  variant='dark' expand="lg">
@@ -23,14 +31,14 @@ function Navigation() {
               )
             : (
                <Navbar.Text>
-                  Signed in as: <a href="#">{user.name}</a>
+                  Signed in as: <u style={{color: "#F7F1EA"}}>{user.name}</u>
                </Navbar.Text>
             )  
         }
         </Navbar.Collapse>
         {user && (
               <LinkContainer to="/login ">
-                <Button href='/login' variant="outline-danger">Logout</Button>
+                <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
               </LinkContainer>
         )}
         </Stack>
