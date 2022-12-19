@@ -4,13 +4,13 @@ import appApi from './services/appApi';
 
 //persist our store
 import storage from 'redux-persist/lib/storage';
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 
 //reducers
 const reducer = combineReducers({
-    user: userSlice.reducer,
+    user: userSlice,
     [appApi.reducerPath]: appApi.reducer,
 });
 

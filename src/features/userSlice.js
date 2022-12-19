@@ -11,18 +11,18 @@ export const userSlice = createSlice({
         },
         resetNotifications: (state, {payload}) => {
 
-        }
+        },
     },
 
     extraReducers: (builder) => {
         // save user after signup
-        builder.addMatcher(appApi.endpoints.signupUser.matchFullfilled, (state, {payload}) => payload);
+        builder.addMatcher(appApi.endpoints.signupUser.matchFulfilled, (state, {payload}) => payload);
         // save user after login
-        builder.addMatcher(appApi.endpoints.loginUser.matchFullfilled, (state, {payload}) => payload);
+        builder.addMatcher(appApi.endpoints.loginUser.matchFulfilled, (state, {payload}) => payload);
         // destroy user session after logut
-        builder.addMatcher(appApi.endpoints.logoutUser.matchFullfilled, () => null);
-    }
-})
+        builder.addMatcher(appApi.endpoints.logoutUser.matchFulfilled, () => null);
+    },
+});
 
 export const {addNotifications, resetNotifications} = userSlice.actions;
 export default userSlice.reducer;

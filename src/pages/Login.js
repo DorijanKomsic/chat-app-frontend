@@ -1,16 +1,26 @@
-import React, { useState } from 'react'
-import { Container, Form, Button, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import './Login.css'
+import React, { useState } from 'react';
+import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLoginUserMutation } from '../services/appApi';
+import './Login.css';
 
 
 export default function Login() {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginUser, {isLoading, err}] = useLoginUserMutation();
+  const navigate = useNavigate();
 
   function handleLogin(e) {
     e.preventDefault();
+
+    loginUser({email, password}).then(({data}) => {
+        if(data) {
+          console.log(data);
+          navigate('/');
+        }
+    });
   }
 
 
@@ -20,6 +30,8 @@ export default function Login() {
         <Col md={5} className="login_bg"></Col>
         <Col md={7} className="d-flex align-items-center justify-content-ceneter flex-direction-column">
          <Form onSubmit={handleLogin}>
+          <h3>Login</h3>
+            <br />
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} value={email} required/>
