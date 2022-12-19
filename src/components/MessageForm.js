@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
+import { useSelector } from 'react-redux';
 import './MessageForm.css'
 
 function MessageForm() {
@@ -7,26 +8,29 @@ function MessageForm() {
     function handleSubmit(e){
         e.preventDefault();
     }
+
+    const user = useSelector(state => state.user);
     
     return (
-        <div>
-            <div className='messages-form'></div>
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Col md={11}>
-                            <Form.Group>
-                                <Form.Control type='text' placeholder='Aa'></Form.Control>
-                            </Form.Group>
-                        </Col>
-                        <Col md={1}>
-                            <Button variant='danger' type='submit' style={{width: "100%"}}>
-                                <i className='fas fa-paper-plane'></i>
-                            </Button>
-                        </Col>
-                    </Row>
+        <>
+            <div className='messageOutput'>{!user && (<div className='alert alert-danger'>Please login!</div>)}</div>
+                <div className='messages-form'></div>
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Col md={11}>
+                                <Form.Group>
+                                    <Form.Control type='text' placeholder='Aa' disabled={!user}></Form.Control>
+                                </Form.Group>
+                            </Col>
+                            <Col md={1}>
+                                <Button variant='danger' type='submit' style={{width: "100%"}} disabled={!user}>
+                                    <i className='fas fa-paper-plane'></i>
+                                </Button>
+                            </Col>
+                        </Row>
 
-                </Form> 
-        </div>
+                    </Form> 
+        </>
   )
 }
 

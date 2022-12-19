@@ -36,11 +36,16 @@ function Navigation() {
             )  
         }
         </Navbar.Collapse>
-        {user && (
+        {user ? (
               <LinkContainer to="/login ">
                 <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
               </LinkContainer>
-        )}
+                )
+              : (
+                <LinkContainer to="/login ">
+                <Button variant="outline-danger">Login</Button>
+                </LinkContainer>
+              )}
         </Stack>
       </Container>
     </Navbar>
