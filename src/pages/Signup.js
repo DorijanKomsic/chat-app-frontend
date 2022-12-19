@@ -2,21 +2,22 @@ import React, { useState } from 'react'
 import { Container, Form, Button, Row, Col } from 'react-bootstrap'
 import { Navigate, useNavigate } from 'react-router-dom';
 import './Signup.css'
+import { useSignupUserMutation } from '../services/appApi';
 
 
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signupUser, {isLoading, err}] = useSignupUserMutation()
 
   function handleSignup(e) {
     e.preventDefault();
 
-/*    signUpUser({email, password}).then(({data}) => {
+    signupUser({email, password}).then(({data}) => {
       if(data) {
         console.log(data);
-        useNavigate("/");
       }
-    })*/
+    })
   }
 
 

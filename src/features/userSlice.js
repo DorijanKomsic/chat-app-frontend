@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice }from '@reduxjs/toolkit';
 import appApi from '../services/appApi';
 
 
@@ -20,7 +20,7 @@ export const userSlice = createSlice({
         // save user after login
         builder.addMatcher(appApi.endpoints.loginUser.matchFullfilled, (state, {payload}) => payload);
         // destroy user session after logut
-        builder.addMatcher(appApi.endpoints.logoutUser.matchFullfilled, (state) => payload);
+        builder.addMatcher(appApi.endpoints.logoutUser.matchFullfilled, () => null);
     }
 })
 
