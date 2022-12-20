@@ -16,6 +16,33 @@ function Sidebar() {
         socket.emit("new-user");
       }
   }, [])
+
+  function joinRoom(room, isPublic=true) {
+      if(!user) {
+        return alert("Please log in to your account");
+      }
+      
+      socket.emit('join-room', room);
+      setCurrentRoom(room);
+
+      if(isPublic) {
+        setPrivateMessage(null);        
+      }
+  }
+
+  function orderbyId(id1, id2) {
+      if(id1 > id2) {
+        return id1 + '-' + id2;
+      } else {
+        return id2 + '-' + id1;
+      }
+  }
+
+  function handlePrivateMessage(member){
+      setPrivateMessage(member);
+      const roomId = orderbyId(user._id, member._id);
+      joinRoom(roomId, false);
+  }
   
   socket.off('new-user').on('new-user', (payload) => {
       setMembers(payload);
@@ -32,13 +59,15 @@ function Sidebar() {
       <h2>Rooms</h2>
       <ListGroup>
           {rooms.map((room, index) => (
-            <ListGroup.Item key={index}>{room}</ListGroup.Item>
+            <ListGroup.Item key={index} onClick={() => joinRoom(room)} active={room === currentRoom} style={{cursor: 'pointer', display: 'flex', justifyContent: 'space-between'}}>
+                  {room} {currentRoom !== room && <span></span>}
+              </ListGroup.Item>
           ))}
       </ListGroup>
       <h2>Members</h2>
             <ListGroup>
                 {members.map((member,index) => (
-                  <ListGroup.Item  style={{cursor: 'pointer'}} key={index}>
+                  <ListGroup.Item  style={{cursor: 'pointer'}} active={privateMessage?._id == member?._id} key={index} onClick={() => handlePrivateMessage(member)} disabled={member?._id === user?._id}>
                     {member.name}
                   </ListGroup.Item>
               ))}

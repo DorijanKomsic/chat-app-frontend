@@ -38,6 +38,7 @@ function MessageForm() {
         const time = today.getHours + ":" + minutes;
 
         const roomId = currentRoom;
+        console.log(roomId);
         socket.emit('message-room', roomId, message, user, time, currentDate);
         setMessage("");
     }
