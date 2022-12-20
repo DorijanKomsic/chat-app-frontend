@@ -1,11 +1,13 @@
 import React, { useContext, useEffect } from 'react'
 import { Col, Container, ListGroup, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {AppContext} from '../context/appContext';
+import { addNotifications, resetNotifications } from '../features/userSlice'; 
 
 function Sidebar() {
 
   const user = useSelector(state => state.user);
+  const dispatch = useDispatch()
   const { socket, members, setMembers, currentRoom, setCurrentRoom, rooms, setRooms, privateMessage, setPrivateMessage } = useContext(AppContext);
   
   useEffect(() => {
@@ -28,6 +30,12 @@ function Sidebar() {
       if(isPublic) {
         setPrivateMessage(null);        
       }
+
+      dispatch(resetNotifications(room));
+
+      socket.off('notifications').on('notifications', (room) => {
+          dispatch(addNotifications(room));
+      })
   }
 
   function orderbyId(id1, id2) {
@@ -60,7 +68,7 @@ function Sidebar() {
       <ListGroup>
           {rooms.map((room, index) => (
             <ListGroup.Item key={index} onClick={() => joinRoom(room)} active={room === currentRoom} style={{cursor: 'pointer', display: 'flex', justifyContent: 'space-between'}}>
-                  {room} {currentRoom !== room && <span></span>}
+                  {room} {currentRoom !== room && <span className='badge rouned-pill bg-primary'>{user.newMessages[room]}</span>}
               </ListGroup.Item>
           ))}
       </ListGroup>
