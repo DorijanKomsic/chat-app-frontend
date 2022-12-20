@@ -10,13 +10,15 @@ import { AppContext, socket } from "./context/appContext";
 function App() {
 
   const user = useSelector(state => state.user);
+  const [rooms, setRooms] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState([]);
   const [members, setMembers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [privateMessage, setPrivateMessage] = useState({});
   const [newMessage, setNewMessage] = useState({});
 
   return (
-    <AppContext.Provider value={(socket, members, setMembers, messages, setMessages, privateMessage, setPrivateMessage, newMessage, setNewMessage)}>
+    <AppContext.Provider value={{socket, rooms, setRooms, currentRoom, setCurrentRoom, members, setMembers, messages, setMessages, privateMessage, setPrivateMessage, newMessage, setNewMessage}}>
       <BrowserRouter>
         <Navigation />
           <Routes>
