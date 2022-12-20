@@ -1,15 +1,48 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux';
+import { AppContext } from '../context/appContext';
 import './MessageForm.css'
 
 function MessageForm() {
   
-    function handleSubmit(e){
-        e.preventDefault();
+    const [message, setMessage] = useState("");
+    const { socket, currentRoom, messages, setMessages, privateMessage } = useContext(AppContext)
+    const user = useSelector(state => state.user);
+
+    const currentDate = getFormattedDate();
+
+    socket.off('room-messages').on('room-messages', (messages) => {
+        console.log(messages);
+        setMessages(messages);
+    })
+
+    function getFormattedDate() {
+         const date = new Date();
+         const year = date.getFullYear(); 
+         let month = (1 + date.getMonth()).toString();
+
+         month = month.length > 1 ? month : '0' + month;
+         
+         let day = date.getDate().toString(); 
+         day = day.length > 1 ? day : '0' + day;
+
+         return month + "/" + day + "/" + year;
     }
 
-    const user = useSelector(state => state.user);
+    function handleSubmit(e){
+        e.preventDefault();
+        if(!message) return;
+        
+        const today = new Date();
+        const minutes = today.getMinutes() < 10 ?  '0' + today.getMinutes() : today.getMinutes();
+        const time = today.getHours + ":" + minutes;
+
+        const roomId = currentRoom;
+        socket.emit('message-room', roomId, message, user, time, currentDate);
+        setMessage("");
+    }
+
     
     return (
         <>
@@ -19,7 +52,7 @@ function MessageForm() {
                         <Row>
                             <Col md={11}>
                                 <Form.Group>
-                                    <Form.Control type='text' placeholder='Aa' disabled={!user}></Form.Control>
+                                    <Form.Control type='text' placeholder='Aa' disabled={!user} onChange={(e) => setMessage(e.target.value)} value={message}></Form.Control>
                                 </Form.Group>
                             </Col>
                             <Col md={1}>
