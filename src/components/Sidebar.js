@@ -1,34 +1,50 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { useSelector } from 'react-redux';
 import {AppContext} from '../context/appContext';
 
 function Sidebar() {
 
-  const roomList = ["gen-chat-1", "gen-chat-2", "gen-chat-3"];
+  const user = useSelector(state => state.user);
   const { socket, members, setMembers, currentRoom, setCurrentRoom, rooms, setRooms, privateMessage, setPrivateMessage } = useContext(AppContext);
-
+  
+  useEffect(() => {
+      if(user) {
+        setCurrentRoom("gen-chat#1");
+        getRooms();
+        socket.emit("join-room", "gen-chat#1");
+        socket.emit("new-user");
+      }
+  }, [])
+  
   socket.off('new-user').on('new-user', (payload) => {
       console.log(payload);
       setMembers(payload);
   })
 
-  console.log(members);
+  function getRooms() {
+    fetch("http://localhost:5001/rooms")
+        .then((res) => res.json())
+        .then((data) => setRooms(data));
+}
+  console.log(getRooms());
 
   return (
     <>
       <h2>Rooms</h2>
       <ListGroup>
-          {roomList.map((room, index) => (
+          {rooms.map((room, index) => (
             <ListGroup.Item key={index}>{room}</ListGroup.Item>
           ))}
       </ListGroup>
       <h2>Members</h2>
-            {members.map(member => (
-              <ListGroup.Item key={member.id} style={{cursor: 'pointer'}}>
-                {member.name}
-                hello
-              </ListGroup.Item>
-            ))}
+            <ListGroup>
+                {members.map((member,index) => (
+                  <ListGroup.Item  style={{cursor: 'pointer'}} key={index}>
+                    {member.name}
+                  </ListGroup.Item>
+              ))}
+            </ListGroup>
     </>
   )
 }
