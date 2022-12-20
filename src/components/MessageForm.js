@@ -13,7 +13,6 @@ function MessageForm() {
     const currentDate = getFormattedDate();
 
     socket.off('room-messages').on('room-messages', (messages) => {
-        console.log(messages);
         setMessages(messages);
     })
 
@@ -46,8 +45,21 @@ function MessageForm() {
     
     return (
         <>
-            <div className='messageOutput'>{!user && (<div className='alert alert-danger'>Please login!</div>)}</div>
-                <div className='messages-form'></div>
+            <div className='messages-form'>
+                {!user 
+                    ? (<div className='alert alert-danger'>Please login!</div>) 
+                
+                    : messages.map(({_id: date, messagesByDate}, index) => (
+                        <div key={index}>
+                            <p className='alert alert-info text center message-date-indicator'>{date}</p>
+                            {messagesByDate?.map(({content, time, from: sender}, msgIndex) => (
+                                <div className='message' key={msgIndex}>
+                                    <p>{content}</p>
+                                </div>
+                        ))}
+                        </div>
+                    ))}
+                </div>
                     <Form onSubmit={handleSubmit}>
                         <Row>
                             <Col md={11}>

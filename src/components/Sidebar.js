@@ -18,7 +18,6 @@ function Sidebar() {
   }, [])
   
   socket.off('new-user').on('new-user', (payload) => {
-      console.log(payload);
       setMembers(payload);
   })
 
@@ -27,7 +26,6 @@ function Sidebar() {
         .then((res) => res.json())
         .then((data) => setRooms(data));
 }
-  console.log(getRooms());
 
   return (
     <>
