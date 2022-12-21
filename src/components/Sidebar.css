@@ -1,0 +1,29 @@
+.member-status {
+    margin-bottom: 0;
+    position: relative;
+}
+
+.sidebar-online-status {
+    color: #3ba55c;
+}
+
+.sidebar-offline-status {
+    color: #dc3545;
+}
+
+.sidebar-online-status,
+.sidebar-offline-status {
+    font-size: 11px;
+    position: absolute;
+    z-index: 99;
+    left: 12px;
+    top: 45%;
+}
+
+
+
+.members-list.active {
+    cursor: pointer;
+    color: #ececed;
+    background-color: #212529;
+}

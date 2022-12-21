@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux';
 import { AppContext } from '../context/appContext';
@@ -9,6 +9,11 @@ function MessageForm() {
     const [message, setMessage] = useState("");
     const { socket, currentRoom, messages, setMessages, privateMessage } = useContext(AppContext)
     const user = useSelector(state => state.user);
+    const messageEndRef = useRef(null);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages])
 
     const currentDate = getFormattedDate();
 
@@ -35,7 +40,7 @@ function MessageForm() {
         
         const today = new Date();
         const minutes = today.getMinutes() < 10 ?  '0' + today.getMinutes() : today.getMinutes();
-        const time = today.getHours + ":" + minutes;
+        const time = today.getHours() + ":" + minutes;
 
         const roomId = currentRoom;
         console.log(roomId);
@@ -43,10 +48,23 @@ function MessageForm() {
         setMessage("");
     }
 
+    function scrollToBottom() {
+        messageEndRef.current?.scrollIntoView({behaviour: 'smooth'})
+    }
     
     return (
         <>
             <div className='messages-form'>
+                {user && !privateMessage?._id && (<div className='alert alert-info'>Currently in {currentRoom} room</div>)}
+                {user && privateMessage?.id && (
+                    <>
+                        <div className='alert alert-info conversation-info'>
+                            <div>
+                                You began a conversation with {privateMessage.name}
+                            </div>
+                        </div>
+                    </>
+                )}
                 {!user 
                     ? (<div className='alert alert-danger'>Please login!</div>) 
                 
@@ -54,12 +72,19 @@ function MessageForm() {
                         <div key={index}>
                             <p className='alert alert-info text center message-date-indicator'>{date}</p>
                             {messagesByDate?.map(({content, time, from: sender}, msgIndex) => (
-                                <div className='message' key={msgIndex}>
-                                    <p>{content}</p>
+                                <div className={sender?.email == user?.email ? "message" : "incoming-message"} key={msgIndex}>
+                                    <div className='message-inner'>
+                                        <div className='d-flex align-items-center mb-3'>
+                                            <u className='message-sender'>{sender._id === user?._id ? "You" : sender.name}:</u>
+                                        </div>
+                                        <p className='message-content'>{content}</p>
+                                        <p className='message-timestamp'>{time}</p>
+                                    </div>
                                 </div>
                         ))}
                         </div>
                     ))}
+                    <div ref={messageEndRef} />
                 </div>
                     <Form onSubmit={handleSubmit}>
                         <Row>
